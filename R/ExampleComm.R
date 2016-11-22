@@ -8,15 +8,17 @@
  
 ExampleComm =function()
 {
-
-tr1 = Commodity(Notional=10000,MtM= -50,Si=0,Ei=0.75,BuySell='Buy',SubClass='Energy',commodity_type='Oil/Gas')
-tr2 = Commodity(Notional=20000,MtM= -30,Si=0,Ei=2,BuySell='Sell',SubClass='Energy',commodity_type='Oil/Gas')
-tr3 = Commodity(Notional=10000,MtM= 100,Si=0,Ei=5,BuySell='Buy',SubClass='Metals',commodity_type='Silver')
+  requireNamespace("Trading")
+tr1 = Trading::Commodity(external_id = "ext_1",Notional=10000,MtM= -50,Si=0,Ei=0.75,BuySell='Buy',SubClass='Energy',commodity_type='Oil/Gas')
+tr2 = Trading::Commodity(external_id = "ext_2",Notional=20000,MtM= -30,Si=0,Ei=2,BuySell='Sell',SubClass='Energy',commodity_type='Oil/Gas')
+tr3 = Trading::Commodity(external_id = "ext_3",Notional=10000,MtM= 100,Si=0,Ei=5,BuySell='Buy',SubClass='Metals',commodity_type='Silver')
 
 trades= list(tr1,tr2,tr3)
 
+csas = list()
+colls = list()
 # calculating the Exposure-at-Default
-EAD = runExampleCalcs(trades)
+tree = runExampleCalcs(trades, csas, colls)
 
-return(EAD)
+return(tree[[1]])
 }
