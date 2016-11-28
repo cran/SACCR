@@ -28,5 +28,5 @@ GroupFXTrades = function(group_trades, trade_classes_tree,hedging_set_name)
       tree_trade$trade = ccypairs_trades[[l]]
     }
   }
-  
+  return(trade_classes_tree)
 }

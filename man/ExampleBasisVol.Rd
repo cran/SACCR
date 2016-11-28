@@ -4,7 +4,10 @@
 \alias{ExampleBasisVol}
 \title{Basis+Volatility trades Example}
 \usage{
-ExampleBasisVol()
+ExampleBasisVol(JSON = FALSE)
+}
+\arguments{
+\item{JSON}{(optional) if TRUE it returns a json string}
 }
 \value{
 The exposure at default

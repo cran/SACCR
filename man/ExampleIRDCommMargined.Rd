@@ -4,7 +4,10 @@
 \alias{ExampleIRDCommMargined}
 \title{Margined IRDs+Commodity Example}
 \usage{
-ExampleIRDCommMargined()
+ExampleIRDCommMargined(JSON = FALSE)
+}
+\arguments{
+\item{JSON}{(optional) if TRUE it returns a json string}
 }
 \value{
 The exposure at default (expected value  based on the Basel paper is 1879)

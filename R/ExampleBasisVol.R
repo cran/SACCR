@@ -1,12 +1,13 @@
 #' Calculates the Exposure at Default for a trade set containing basis and volatility transactions
 #' @title Basis+Volatility trades Example
+#' @param JSON (optional) if TRUE it returns a json string 
 #' @return The exposure at default
 #' @export
 #' @author Tasos Grivas <tasos@@openriskcalculator.com>
 #' @references Basel Committee: The standardised approach for measuring counterparty credit risk exposures
 #' http://www.bis.org/publ/bcbs279.htm
 
-ExampleBasisVol =function()
+ExampleBasisVol =function(JSON = FALSE)
 {
   requireNamespace("Trading")
 # creating the trade objects and storing them in a list
@@ -23,5 +24,13 @@ colls = list()
 # calculating the Exposure-at-Default
 tree = runExampleCalcs(trades, csas, colls)
 
-return(tree[[1]])
+if(JSON==TRUE)
+{
+  requireNamespace("jsonlite")
+  return(jsonlite::toJSON(as.list(tree[[1]])))
+}
+else
+{
+  return(tree[[1]])
+}
 }

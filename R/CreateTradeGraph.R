@@ -16,7 +16,7 @@ CreateTradeGraph <- function(trades)  {
   
   trade_classes_addon <- array(data<-0,dim<-length(trade_classes))
   
-  head_node <- data.tree::Node$new("Addon Breakdown")
+  head_node <- data.tree::Node$new("Trades Tree")
   trade_classes_tree=list()
   
   for(i in 1:length(trade_classes))

@@ -44,12 +44,15 @@ CalcAddon <- function(trades_tree, MF)  {
           ccypairs_trade = ccypairs_trades[[ccypairs_trades_names[l]]]
           ccypairs_trade$exposure_details = SingleTradeAddon(ccypairs_trade$trade,MF)
           # aggregating the add-on contribution for a specific hedging set
-          ccypairs[[ccypairs_names[j]]]$add_on <- ccypairs[[ccypairs_names[j]]]$add_on + ccypairs_trade$exposure_details$addon
+          ccypairs[[ccypairs_names[j]]]$add_on <- ccypairs[[ccypairs_names[j]]]$add_on + ccypairs_trade$exposure_details$effective_notional
+
         }
         factor_mult = CalculateFactorMult(ccypairs_names[j])
         # getting the supervisory factor
         supervisory_factor <- factor_mult*superv$Supervisory_factor[superv$Asset_Class==ccypairs_trade$trade$TradeGroup]
+        ccypairs[[ccypairs_names[j]]]$supervisory_factor = supervisory_factor
         ccypairs_addon[j] = supervisory_factor*ccypairs[[ccypairs_names[j]]]$add_on
+        ccypairs[[ccypairs_names[j]]]$addon = ccypairs_addon[j]
       }
       asset_class_node$addon = sum(abs(ccypairs_addon))
       trades_tree$addon = trades_tree$addon + asset_class_node$addon
@@ -68,7 +71,7 @@ CalcAddon <- function(trades_tree, MF)  {
         
         for (k in 1:length(currencies_buckets_names))
         {
-          currencies_buckets[[currencies_buckets_names[k]]]$addon = 0
+          currencies_buckets[[currencies_buckets_names[k]]]$effective_notional = 0
           #picking up all the trades belonging to a specific timebucket
           timebuckets_trades  <- currencies_buckets[[currencies_buckets_names[k]]]$children
           
@@ -78,14 +81,15 @@ CalcAddon <- function(trades_tree, MF)  {
           {
             timebuckets_trade = timebuckets_trades[[timebuckets_trades_names[l]]]
             timebuckets_trade$exposure_details = SingleTradeAddon(timebuckets_trade$trade,MF)
-            currencies_buckets[[currencies_buckets_names[k]]]$addon = currencies_buckets[[currencies_buckets_names[k]]]$addon + timebuckets_trade$exposure_details$addon
+            currencies_buckets[[currencies_buckets_names[k]]]$effective_notional = currencies_buckets[[currencies_buckets_names[k]]]$effective_notional + timebuckets_trade$exposure_details$effective_notional
           }
           factor_mult = CalculateFactorMult(currencies_names[j])
           
           supervisory_factor <- factor_mult*superv$Supervisory_factor[superv$Asset_Class==timebuckets_trade$trade$TradeGroup&superv$SubClass==timebuckets_trade$trade$SubClass]
-          
-          # aggregating the add-on timebuckets recognizing correlation between each time bucket  
-          currencies[[currencies_names[j]]]$addon <- supervisory_factor*(sum(currencies_buckets[["1"]]$addon^2,currencies_buckets[["2"]]$addon^2,currencies_buckets[["3"]]$addon^2,1.4*currencies_buckets[["2"]]$addon*currencies_buckets[["3"]]$addon,1.4*currencies_buckets[["2"]]$addon*currencies_buckets[["1"]]$addon,0.6*currencies_buckets[["2"]]$addon*currencies_buckets[["1"]]$addon,na.rm = TRUE))^0.5
+          currencies[[currencies_names[j]]]$supervisory_factor = supervisory_factor
+          # aggregating the add-on timebuckets recognizing correlation between each time bucket
+          currencies[[currencies_names[j]]]$effective_notional = (sum(currencies_buckets[["1"]]$effective_notional^2,currencies_buckets[["2"]]$effective_notional^2,currencies_buckets[["3"]]$effective_notional^2,1.4*currencies_buckets[["2"]]$effective_notional*currencies_buckets[["3"]]$effective_notional,1.4*currencies_buckets[["2"]]$effective_notional*currencies_buckets[["1"]]$effective_notional,0.6*currencies_buckets[["2"]]$effective_notional*currencies_buckets[["1"]]$effective_notional,na.rm = TRUE))^0.5
+          currencies[[currencies_names[j]]]$addon <- supervisory_factor*currencies[[currencies_names[j]]]$effective_notional
           
         }
         # adding up the addon of each currency after multiplying with the supervisory factor
@@ -114,7 +118,7 @@ CalcAddon <- function(trades_tree, MF)  {
         {
           refEntities_trade = refEntities_trades[[refEntities_trades_names[k]]]
           refEntities_trade$exposure_details = SingleTradeAddon(refEntities_trade$trade,MF)
-          refEntities[[refEntities_names[j]]]$add_on <- refEntities[[refEntities_names[j]]]$add_on  + refEntities_trade$exposure_details$addon
+          refEntities[[refEntities_names[j]]]$add_on <- refEntities[[refEntities_names[j]]]$add_on  + refEntities_trade$exposure_details$effective_notional
         }
         factor_mult = CalculateFactorMult(refEntities_names[j])
         AssetClass<-paste(refEntities_trade$trade$TradeGroup,refEntities_trade$trade$TradeType,sep="")
@@ -122,9 +126,13 @@ CalcAddon <- function(trades_tree, MF)  {
         refEntities[[refEntities_names[j]]]$add_on <- refEntities[[refEntities_names[j]]]$add_on*supervisory_factor
         supervisory_corel[j]  <- superv$Correlation[superv$Asset_Class==AssetClass&superv$SubClass==refEntities_trade$trade$SubClass]
         refEntities_addon[j] = refEntities[[refEntities_names[j]]]$add_on
+        refEntities[[refEntities_names[j]]]$supervisory_corel = supervisory_corel
+        refEntities[[refEntities_names[j]]]$supervisory_factor = supervisory_factor
       }
       systematic_component     <- (sum(refEntities_addon*supervisory_corel))^2
       idiosynchratic_component <-  sum((rep(1,length(refEntities))-supervisory_corel^2)*refEntities_addon^2)
+      asset_class_node$systematic_component = systematic_component
+      asset_class_node$idiosynchratic_component = idiosynchratic_component
       asset_class_node$addon   <- sqrt(systematic_component + idiosynchratic_component)
       trades_tree$addon = trades_tree$addon + asset_class_node$addon
     }else   if(asset_class_names[i]=='Commodity')
@@ -150,6 +158,7 @@ CalcAddon <- function(trades_tree, MF)  {
         for (k in 1:length(com_types_names))
         {
           com_types[[com_types_names[k]]]$addon = 0
+          com_types[[com_types_names[k]]]$effective_notional = 0
           com_types_trades  <- com_types[[com_types_names[k]]]$children
           com_types_trades_names  <- names(com_types_trades)
           
@@ -158,16 +167,21 @@ CalcAddon <- function(trades_tree, MF)  {
             com_types_trade = com_types_trades[[com_types_trades_names[l]]]
             com_types_trade$exposure_details = SingleTradeAddon(com_types_trade$trade,MF)
             # aggregating the add-on contribution for a specific hedging set
-            com_types[[com_types_names[k]]]$addon <- com_types[[com_types_names[k]]]$addon + com_types_trade$exposure_details$addon
+            com_types[[com_types_names[k]]]$addon <- com_types[[com_types_names[k]]]$addon + com_types_trade$exposure_details$effective_notional
+            com_types[[com_types_names[k]]]$effective_notional = com_types[[com_types_names[k]]]$effective_notional + com_types_trade$exposure_details$effective_notional
           }
           factor_mult = CalculateFactorMult(HedgingSets_names[j])
           supervisory_factor <- factor_mult*superv$Supervisory_factor[superv$Asset_Class==AssetClass&(superv$SubClass==com_types_trade$trade$SubClass|superv$SubClass==com_types_trade$trade$commodity_type)]
           com_types[[com_types_names[k]]]$addon <- com_types[[com_types_names[k]]]$addon*supervisory_factor
-          com_types_addon = com_types_addon + com_types[[com_types_names[k]]]$addon 
+          com_types[[com_types_names[k]]]$supervisory_factor = supervisory_factor
+          com_types_addon = com_types_addon + com_types[[com_types_names[k]]]$addon
           com_types_addon_sq = com_types_addon_sq + com_types[[com_types_names[k]]]$addon^2
+          #com_types[[com_types_names[k]]]$com_types_addon = com_types_addon
+          
         }
         supervisory_corel     <- superv$Correlation[superv$Asset_Class==AssetClass&(superv$SubClass==com_types_trade$trade$SubClass|superv$SubClass==com_types_trade$trade$commodity_type)]
         HedgingSets[[HedgingSets_names[j]]]$addon  <- sqrt((com_types_addon*supervisory_corel)^2 + (1-supervisory_corel^2)*com_types_addon_sq)
+        HedgingSets[[HedgingSets_names[j]]]$supervisory_corel = supervisory_corel
         HedgingSets_addon = HedgingSets_addon + HedgingSets[[HedgingSets_names[j]]]$addon
       }
       asset_class_node$addon <- asset_class_node$addon + HedgingSets_addon
@@ -192,7 +206,7 @@ CalcAddon <- function(trades_tree, MF)  {
         {
           refEntities_trade = refEntities_trades[[refEntities_trades_names[k]]]
           refEntities_trade$exposure_details = SingleTradeAddon(refEntities_trade$trade,MF)
-          refEntities[[refEntities_names[j]]]$add_on <- refEntities[[refEntities_names[j]]]$add_on  + refEntities_trade$exposure_details$addon
+          refEntities[[refEntities_names[j]]]$add_on <- refEntities[[refEntities_names[j]]]$add_on  + refEntities_trade$exposure_details$effective_notional
         }
         factor_mult = CalculateFactorMult(refEntities_names[j])
         AssetClass<-paste(refEntities_trade$trade$TradeGroup,refEntities_trade$trade$TradeType,sep="")
@@ -200,13 +214,22 @@ CalcAddon <- function(trades_tree, MF)  {
         refEntities[[refEntities_names[j]]]$add_on <- refEntities[[refEntities_names[j]]]$add_on*supervisory_factor
         supervisory_corel[j]  <- superv$Correlation[superv$Asset_Class==AssetClass&superv$SubClass==refEntities_trade$trade$SubClass]
         refEntities_addon[j] = refEntities[[refEntities_names[j]]]$add_on
+        refEntities[[refEntities_names[j]]]$supervisory_corel = supervisory_corel[j]
+        refEntities[[refEntities_names[j]]]$supervisory_factor = supervisory_factor
       }
       systematic_component     <- (sum(refEntities_addon*supervisory_corel))^2
       idiosynchratic_component <-  sum((rep(1,length(refEntities))-supervisory_corel^2)*refEntities_addon^2)
       asset_class_node$addon   <- sqrt(systematic_component + idiosynchratic_component)
+      asset_class_node$systematic_component = systematic_component
+      asset_class_node$idiosynchratic_component = idiosynchratic_component
       trades_tree$addon = trades_tree$addon + asset_class_node$addon
     }  
   }
+  sapply(trades_tree$leaves, function(x) x$trade = NULL)
+  
+  if(!missing(MF))
+    trades_tree$maturity_factor = MF
+  
   return(trades_tree)
 }
 

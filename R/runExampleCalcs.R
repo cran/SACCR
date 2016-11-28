@@ -5,7 +5,7 @@ runExampleCalcs <-function(trades, csas, colls)
   trade_trees = list()
   trades_temp = list()
   
-  if(!missing(csas))
+  if(length(csas)!=0)
   {
     for(i in 1:(length(csas)+1))
     {

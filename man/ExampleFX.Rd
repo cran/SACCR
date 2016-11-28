@@ -4,7 +4,10 @@
 \alias{ExampleFX}
 \title{FX Example}
 \usage{
-ExampleFX()
+ExampleFX(JSON = FALSE)
+}
+\arguments{
+\item{JSON}{(optional) if TRUE it returns a json string}
 }
 \value{
 The exposure at default

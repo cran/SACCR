@@ -1,8 +1,8 @@
 Package: SACCR
 Type: Package
 Title: SA Counterparty Credit Risk under Basel III
-Version: 2.0
-Date: 2016-11-19
+Version: 2.1
+Date: 2016-11-27
 Author: Tasos Grivas
 Maintainer: Tasos Grivas <info@openriskcalculator.com>
 Description: Computes the Exposure-At-Default based on standardized approach
@@ -17,7 +17,7 @@ Description: Computes the Exposure-At-Default based on standardized approach
     regulatory paper (including the margined and the un-margined workflow) have been
     implemented.
 License: GPL-3
-Imports: methods,Trading,data.tree
+Imports: methods,Trading,data.tree,jsonlite
 URL: www.openriskcalculator.com
 Collate: 'CalcAddon.R' 'CalcEAD.R' 'CalcPFE.R' 'CalcRC.R'
         'ExampleBasisVol.R' 'ExampleComm.R' 'ExampleCredit.R'
@@ -29,6 +29,6 @@ Collate: 'CalcAddon.R' 'CalcEAD.R' 'CalcPFE.R' 'CalcRC.R'
         'GroupTrades.R' 'SACCRCalculator.R' 'SingleTradeAddon.R'
 NeedsCompilation: no
 RoxygenNote: 5.0.1
-Packaged: 2016-11-21 21:10:53 UTC; tasos
+Packaged: 2016-11-27 21:55:14 UTC; tasos
 Repository: CRAN
-Date/Publication: 2016-11-22 09:06:54
+Date/Publication: 2016-11-28 13:26:21

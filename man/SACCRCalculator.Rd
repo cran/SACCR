@@ -4,7 +4,7 @@
 \alias{SACCRCalculator}
 \title{SA-CCR Calculator}
 \usage{
-SACCRCalculator(trades_filename, csa_filename, coll_filename)
+SACCRCalculator(trades_filename, csa_filename, coll_filename, JSON = FALSE)
 }
 \arguments{
 \item{trades_filename}{a .csv file containing the trades}
@@ -12,6 +12,8 @@ SACCRCalculator(trades_filename, csa_filename, coll_filename)
 \item{csa_filename}{a .csv file containing CSAs}
 
 \item{coll_filename}{a .csv file containing collaterals}
+
+\item{JSON}{(optional) if TRUE it returns a json string}
 }
 \value{
 The exposure at default (expected value based on the Basel paper is 569)

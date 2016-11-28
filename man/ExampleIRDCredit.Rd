@@ -4,7 +4,10 @@
 \alias{ExampleIRDCredit}
 \title{IRDs+Commodity Example}
 \usage{
-ExampleIRDCredit()
+ExampleIRDCredit(JSON = FALSE)
+}
+\arguments{
+\item{JSON}{(optional) if TRUE it returns a json string}
 }
 \value{
 The exposure at default (expected value  based on the Basel paper is 936)

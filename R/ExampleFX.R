@@ -1,12 +1,13 @@
 #' Calculates the Exposure at Default for the FX product type
 #' @title FX Example
 #' @return The exposure at default
+#' @param JSON (optional) if TRUE it returns a json string 
 #' @export
 #' @author Tasos Grivas <tasos@@openriskcalculator.com>
 #' @references Basel Committee: The standardised approach for measuring counterparty credit risk exposures
 #' http://www.bis.org/publ/bcbs279.htm
 
-ExampleFX =function()
+ExampleFX =function(JSON = FALSE)
 {
   requireNamespace("Trading")
 tr1 = Trading::FXSwap(external_id = "ext_1",Notional=10000,MtM=30,ccyPair="EUR/USD",Si=0,Ei=10,BuySell='Buy')
@@ -20,6 +21,14 @@ colls = list()
 # calculating the Exposure-at-Default
 tree = runExampleCalcs(trades, csas, colls)
 
-return(tree[[1]])
+if(JSON==TRUE)
+{
+  requireNamespace("jsonlite")
+  return(jsonlite::toJSON(as.list(tree[[1]])))
+}
+else
+{
+  return(tree[[1]])
+}
 
 }

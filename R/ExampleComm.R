@@ -1,12 +1,13 @@
 #' Calculates the Exposure at Default for the Commodities example as given in the Basel III regulatory paper
 #' @title Commodities Example
+#' @param JSON (optional) if TRUE it returns a json string 
 #' @return The exposure at default (expected value based on the Basel paper is 5406)
 #' @export
 #' @author Tasos Grivas <tasos@@openriskcalculator.com>
 #' @references Basel Committee: The standardised approach for measuring counterparty credit risk exposures
 #' http://www.bis.org/publ/bcbs279.htm
  
-ExampleComm =function()
+ExampleComm =function(JSON = FALSE)
 {
   requireNamespace("Trading")
 tr1 = Trading::Commodity(external_id = "ext_1",Notional=10000,MtM= -50,Si=0,Ei=0.75,BuySell='Buy',SubClass='Energy',commodity_type='Oil/Gas')
@@ -20,5 +21,13 @@ colls = list()
 # calculating the Exposure-at-Default
 tree = runExampleCalcs(trades, csas, colls)
 
-return(tree[[1]])
+if(JSON==TRUE)
+{
+  requireNamespace("jsonlite")
+  return(jsonlite::toJSON(as.list(tree[[1]])))
+}
+else
+{
+  return(tree[[1]])
+}
 }

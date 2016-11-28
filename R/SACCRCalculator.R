@@ -2,23 +2,25 @@
 #' @title SA-CCR Calculator
 #' @param trades_filename a .csv file containing the trades
 #' @param csa_filename a .csv file containing CSAs
-#' @param coll_filename a .csv file containing collaterals 
+#' @param coll_filename a .csv file containing collaterals
+#' @param JSON (optional) if TRUE it returns a json string 
 #' @return The exposure at default (expected value based on the Basel paper is 569)
 #' @export
 #' @author Tasos Grivas <tasos@@openriskcalculator.com>
 #' @references Basel Committee: The standardised approach for measuring counterparty credit risk exposures
 #' http://www.bis.org/publ/bcbs279.htm
 
-SACCRCalculator = function(trades_filename, csa_filename, coll_filename)
+SACCRCalculator = function(trades_filename, csa_filename, coll_filename, JSON = FALSE)
 {
   requireNamespace("Trading")
   trades = Trading::ParseTrades(trades_filename)
   
+  csas = list()
   if(!missing(csa_filename))
   {
   csa_raw = read.csv(csa_filename)
   
-  csas = list()
+  
   for(i in 1:nrow(csa_raw))
   {
     csas[[i]] = Trading::CSA()
@@ -38,5 +40,14 @@ SACCRCalculator = function(trades_filename, csa_filename, coll_filename)
   }
   trees = runExampleCalcs(trades, csas, colls)
   
+  if(JSON==TRUE)
+  {
+    requireNamespace("jsonlite")
+    return(jsonlite::toJSON(as.list(trees[[1]])))
+  }
+  else
+  {
   return(trees)
+  }
 }
+  

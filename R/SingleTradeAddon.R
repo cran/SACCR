@@ -26,8 +26,8 @@ SingleTradeAddon = function(trade,MF)
     if (trade$TradeType=='Option')
     {
       superv <- LoadSupervisoryData()
-      volatility   <- superv$Supervisory_option_volatility[superv$Asset_Class==trade$TradeGroup&superv$SubClass==trade$SubClass]
-      trade_results$superv_delta <- trade$CalcSupervDelta(volatility)
+      trade_results$volatility   <- superv$Supervisory_option_volatility[superv$Asset_Class==trade$TradeGroup&superv$SubClass==trade$SubClass]
+      trade_results$superv_delta <- trade$CalcSupervDelta(trade_results$volatility)
     }
     else
     {
@@ -38,7 +38,7 @@ SingleTradeAddon = function(trade,MF)
     trade_results$superv_delta <- trade$CalcSupervDelta()
   }
   # aggregating the add-on contribution for a specific hedging set
-  trade_results$addon <-  trade_results$superv_delta*trade_results$AdjNotional*trade_results$maturity_factor
+  trade_results$effective_notional <-  trade_results$superv_delta*trade_results$AdjNotional*trade_results$maturity_factor
   
   return(trade_results)
 }
