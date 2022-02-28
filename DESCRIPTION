@@ -1,8 +1,8 @@
 Package: SACCR
 Type: Package
 Title: SA Counterparty Credit Risk under CRR2
-Version: 3.1
-Date: 2021-07-04
+Version: 3.2
+Date: 2022-02-24
 Author: Tasos Grivas
 Maintainer: Tasos Grivas <info@openriskcalculator.com>
 Description: Computes the Exposure-At-Default based on  the standardized approach
@@ -32,7 +32,7 @@ NeedsCompilation: no
 RoxygenNote: 7.1.1
 Repository: CRAN
 Repository/R-Forge/Project: ccr
-Repository/R-Forge/Revision: 49
-Repository/R-Forge/DateTimeStamp: 2021-07-05 08:20:19
-Date/Publication: 2021-07-05 09:00:02 UTC
-Packaged: 2021-07-05 08:28:06 UTC; rforge
+Repository/R-Forge/Revision: 55
+Repository/R-Forge/DateTimeStamp: 2022-02-26 11:42:38
+Date/Publication: 2022-02-28 09:40:13 UTC
+Packaged: 2022-02-26 11:52:07 UTC; rforge
