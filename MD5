@@ -1,4 +1,4 @@
-a0f45bc7feb4120a74b6bb991f26b0ee *DESCRIPTION
+2441f259518bbe08bccdeb160f30d17e *DESCRIPTION
 99eb43872de934db806e524d2b01ee1a *NAMESPACE
 8d5b50d11a6c13fd2aa2543747496ebc *R/CalcAddon.R
 26343c2eaa87f17302b05eacf90987bd *R/CalcEAD.R
@@ -23,10 +23,10 @@ afe506278867bed7d1b16cceea742e44 *R/GroupIRDTrades.R
 003584b17411fb22b7b19e510f9d303c *R/GroupTrades.R
 3623147ac9cee4c66316e51389db1613 *R/HandleBasisVol.R
 c4905db813917ab04f409f83adb4b27c *R/LoadSupervisoryData.R
-f0163cbc53d24f7d36c3abee6cf816b5 *R/SACCRCalculator.R
+956a3759607e0ce7dbda341fd7d3a43e *R/SACCRCalculator.R
 ac7f6f2b750d73425be349144f236c68 *R/SingleTradeAddon.R
 3f1afdbd9075088265a8e05dbaf2b410 *R/onLoad.R
-4013e555dda730c22a8f285084619e0f *R/runExampleCalcs.R
+768eb8934f6fed57393e83aa27ad8b54 *R/runExampleCalcs.R
 267e26c60fa2ff5fb3c1a1ae15d9fc1e *inst/extdata/CSA.csv
 14305142d4aa2e134381d31661feadd6 *inst/extdata/CSA_basel.csv
 862fe8adec0732041209e94b7fccfd06 *inst/extdata/coll.csv
